@@ -162,3 +162,32 @@ func InOrder2(v *T) []int {
 
 	return res
 }
+
+func (s *TreeStack) isEmpty() bool {
+	return len(*s) == 0
+}
+
+func InOrder3(v *T) []int {
+	if v == nil {
+		return []int{}
+	}
+
+	stack := TreeStack{}
+	res := []int{}
+	for {
+		// Go as far left as we can
+		for v != nil {
+			stack.push(v)
+			v = v.Left
+		}
+		if stack.isEmpty() {
+			break // We are done
+		}
+		v = stack.popOrNil() // Can't be empty because of test
+		res = append(res, v.Val)
+		v = v.Right
+
+	}
+
+	return res
+}
