@@ -111,3 +111,54 @@ func BfOrder(v *T) []int {
 
 	return res
 }
+
+// Simpler stack representation (but slightly more complex
+// traversal)
+type TreeStack []*T
+
+func (s *TreeStack) push(t *T) {
+	*s = append(*s, t)
+}
+
+func (s *TreeStack) popOrNil() *T {
+	if len(*s) == 0 {
+		return nil
+	}
+	i := len(*s) - 1
+	v := (*s)[i]
+	*s = (*s)[:i]
+	return v
+}
+
+// Do an in-order traversal of v and output the
+// values in the tree.
+func InOrder2(v *T) []int {
+	if v == nil {
+		return []int{}
+	}
+
+	stack := TreeStack{}
+	res := []int{}
+	for v != nil {
+		// Go as far left as we can
+		for v.Left != nil {
+			stack.push(v)
+			v = v.Left
+		}
+		// and report the value there
+		res = append(res, v.Val)
+
+		// Backtrack until we can go right
+		for v != nil && v.Right == nil {
+			v = stack.popOrNil()
+		}
+		// and if we have a node where we can go right, report
+		// it and go right
+		if v != nil {
+			res = append(res, v.Val)
+			v = v.Right
+		}
+	}
+
+	return res
+}
